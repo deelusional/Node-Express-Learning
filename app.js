@@ -1,5 +1,8 @@
 // Create and start our own server
 // const http = require('http');
+
+const fs = require('fs'); // fs => file system
+const path = require('path'); // use the path package to help contructing paths
 const express = require('express');
 
 const app = express();
@@ -18,8 +21,20 @@ app.get('/', function (req, res) {
 
 app.post('/store-user', function (req, res) { 
   const userName = req.body.username;
-  console.log(userName);
-  res.send('<h1>Username Stored Dickhead!</h1>');
+  
+  // to open the users.json file use writeFileSync
+  const filePath = path.join(__dirname, 'data', 'users.json'); // __dirname is an absolute path variable
+
+  const fileData = fs.readFileSync(filePath);
+  const existingUsers = JSON.parse(fileData);
+
+  existingUsers.push(userName);
+
+  fs.writeFileSync(filePath, JSON.stringify(existingUsers));
+  
+
+  // console.log(userName); // we originally logged the userName for test
+  res.send('<h1>Username Stored!</h1>');
 });
 
 app.listen(3000); 
