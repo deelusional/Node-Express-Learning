@@ -4,6 +4,7 @@
 const fs = require('fs'); // fs => file system
 const path = require('path'); // use the path package to help contructing paths
 const express = require('express');
+const { response } = require('express');
 
 const app = express();
 
@@ -36,6 +37,29 @@ app.post('/store-user', function (req, res) {
   // console.log(userName); // we originally logged the userName for test
   res.send('<h1>Username Stored!</h1>');
 });
+
+
+// Add a new get route
+
+app.get('/users', function (req, res) { 
+  const filePath = path.join(__dirname, 'data', 'users.json');
+
+  const fileData = fs.readFileSync(filePath);
+  const existingUsers = JSON.parse(fileData);
+
+  let responseData = '<ul>';
+
+  for (const user of existingUsers) { 
+    responseData += '<li>' + user + '</li>';
+  }
+
+  responseData += '</ul>';
+
+  res.send(responseData);
+});
+
+
+
 
 app.listen(3000); 
 
